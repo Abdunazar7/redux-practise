@@ -6,40 +6,66 @@ const userSlice = createSlice({
     users: [],
     selectedUserIds: [],
     nextUserId: 1,
+    editingUser: null,
   },
   reducers: {
     addUser: (state, action) => {
       state.users.push({
         id: state.nextUserId,
-        ...action.payload,
         flightId: null,
+        ...action.payload,
       });
       state.nextUserId += 1;
     },
 
+    deleteUser: (state, action) => {
+      state.users = state.users.filter((u) => u.id !== action.payload);
+      state.selectedUserIds = state.selectedUserIds.filter(
+        (id) => id !== action.payload
+      );
+    },
+
+    startEditUser: (state, action) => {
+      state.editingUser = action.payload;
+    },
+
+    updateUser: (state, action) => {
+      const { id, data } = action.payload;
+      const user = state.users.find((u) => u.id === id);
+      if (user) {
+        Object.assign(user, data);
+      }
+      state.editingUser = null;
+    },
+
     toggleUser: (state, action) => {
       const id = action.payload;
-      if (state.selectedUserIds.includes(id)) {
-        state.selectedUserIds = state.selectedUserIds.filter((u) => u !== id);
-      } else {
-        state.selectedUserIds.push(id);
-      }
+      state.selectedUserIds.includes(id)
+        ? (state.selectedUserIds = state.selectedUserIds.filter(
+            (i) => i !== id
+          ))
+        : state.selectedUserIds.push(id);
     },
 
     assignFlightToUsers: (state, action) => {
       const flightId = action.payload;
-
-      state.users.forEach((user) => {
-        if (state.selectedUserIds.includes(user.id)) {
-          user.flightId = flightId;
+      state.users.forEach((u) => {
+        if (state.selectedUserIds.includes(u.id)) {
+          u.flightId = flightId;
         }
       });
-
       state.selectedUserIds = [];
     },
   },
 });
 
-export const { addUser, toggleUser, assignFlightToUsers } = userSlice.actions;
+export const {
+  addUser,
+  deleteUser,
+  startEditUser,
+  updateUser,
+  toggleUser,
+  assignFlightToUsers,
+} = userSlice.actions;
 
 export default userSlice.reducer;
