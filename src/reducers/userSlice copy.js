@@ -5,16 +5,13 @@ const userSlice = createSlice({
   initialState: {
     users: [],
     selectedUserIds: [],
-    nextUserId: 1,
   },
   reducers: {
     addUser: (state, action) => {
       state.users.push({
-        id: state.nextUserId,
         ...action.payload,
         flightId: null,
       });
-      state.nextUserId += 1;
     },
 
     toggleUser: (state, action) => {
