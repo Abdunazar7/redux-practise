@@ -27,6 +27,10 @@ function Navbar() {
         <NavLink to="/flights" className={linkClass}>
           Flights
         </NavLink>
+
+        <NavLink to="/about" className={linkClass}>
+          About
+        </NavLink>
       </div>
     </nav>
   );
